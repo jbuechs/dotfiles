@@ -1,3 +1,26 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+" All of your Plugins must be added before the following line
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-fugitive.git'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'nelstrom/vim-textobj-rubyblock'
+Plugin 'vim-scripts/textobj-user'
+Plugin 'tpope/vim-bundler.git'
+Plugin 'tpope/vim-rake.git'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'airblade/vim-gitgutter'
+call vundle#end()            " required
+filetype plugin indent on    " required
+" Put your non-Plugin stuff after this line
+
 " 0 at beginning of line
 nmap 0 ^
 
@@ -24,8 +47,17 @@ command! Wq wq
 " Leader
 let mapleader = "\<Space>"
 
+" indent whole file
+map <Leader>i mmgg=G`m<CR>
+" paste code with correct indentation
+map <Leader>p :set paste<CR>o<esc>"*]p:set nopaste<cr>
+
 " Pre-populate a split command with the current directory
 nmap <leader>v :vnew <C-r>=escape(expand("%:p:h"), ' ') . '/'<cr>
+
+" Quickly open/reload vim
+nnoremap <leader>ev :split $MYVIMRC<CR>  
+nnoremap <leader>sv :source $MYVIMRC<CR>
 
 set backspace=2   " Backspace deletes like most programs in insert mode
 set nobackup
@@ -76,9 +108,9 @@ augroup END
 " shell for syntax highlighting purposes.
 let g:is_posix = 1
 
-" Softtabs, 4 spaces
-set tabstop=4
-set shiftwidth=4
+" Softtabs, 2 spaces
+set tabstop=2
+set shiftwidth=2
 set shiftround
 set expandtab
 
@@ -145,3 +177,11 @@ set diffopt+=vertical
 if filereadable($HOME . "/.vimrc.local")
   source ~/.vimrc.local
 endif
+
+runtime macros/matchit.vim
+
+" Configure textobj-rubyblock
+set nocompatible
+if has("autocmd")
+      filetype indent plugin on
+  endif
