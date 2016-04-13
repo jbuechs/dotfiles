@@ -72,6 +72,8 @@ set incsearch     " do incremental searching
 set hlsearch      " Highlight all matches after entering a search pattern
 set laststatus=2  " Always display the status line
 set autowrite     " Automatically :write before running commands
+set ignorecase    " Case insensitive pattern matching
+set smartcase     " Overrides ignorecase if pattern includes upcase
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
