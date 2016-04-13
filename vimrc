@@ -47,6 +47,8 @@ command! Wq wq
 " Leader
 let mapleader = "\<Space>"
 
+" clear the highlighting of previous search pattern matches
+nmap <leader>h :nohlsearch<CR>
 " indent whole file
 map <Leader>i mmgg=G`m<CR>
 " paste code with correct indentation
@@ -67,6 +69,7 @@ set history=50
 set ruler         " show the cursor position all the time
 set showcmd       " display incomplete commands
 set incsearch     " do incremental searching
+set hlsearch      " Highlight all matches after entering a search pattern
 set laststatus=2  " Always display the status line
 set autowrite     " Automatically :write before running commands
 
