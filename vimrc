@@ -17,6 +17,8 @@ Plugin 'tpope/vim-bundler.git'
 Plugin 'tpope/vim-rake.git'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'roman/golden-ratio'
+Plugin 'slim-template/vim-slim.git'
 call vundle#end()            " required
 filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
