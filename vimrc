@@ -19,9 +19,14 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'roman/golden-ratio'
 Plugin 'slim-template/vim-slim.git'
+Plugin 'mattn/emmet-vim'
+Plugin 'thoughtbot/vim-rspec'
 call vundle#end()            " required
 filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
+
+" Pull in contents of the .vim/rspec configuration file
+source ~/.vim/rspec
 
 " 0 at beginning of line
 nmap 0 ^
@@ -55,6 +60,14 @@ nmap <leader>h :nohlsearch<CR>
 map <Leader>i mmgg=G`m<CR>
 " paste code with correct indentation
 map <Leader>p :set paste<CR>o<esc>"*]p:set nopaste<cr>
+
+" Vim-rspec key mappings
+" run the most recently run spec
+nnoremap <Leader>l :call RunLastSpec()<CR>
+" run the nearest spec
+nnoremap <Leader>s :call RunNearestSpec()<CR>
+" Run current spec file
+nnoremap <Leader>t :call RunCurrentSpecFile()<CR>
 
 " Pre-populate a split command with the current directory
 nmap <leader>v :vnew <C-r>=escape(expand("%:p:h"), ' ') . '/'<cr>
