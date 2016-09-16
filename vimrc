@@ -1,6 +1,3 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
-
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -19,10 +16,21 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'roman/golden-ratio'
 Plugin 'slim-template/vim-slim.git'
-Plugin 'mattn/emmet-vim'
 Plugin 'thoughtbot/vim-rspec'
+Plugin 'mattn/emmet-vim'
+Plugin 'marijnh/tern_for_vim'
+"Plugin 'valloric/youcompleteme'
+Plugin 'raimondi/delimitmate'
+Plugin 'pangloss/vim-javascript'
+Plugin 'helino/vim-json'
+Plugin 'scrooloose/syntastic'
+Plugin 'jshint/jshint'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'rking/ag.vim'
+
 call vundle#end()            " required
 filetype plugin indent on    " required
+filetype plugin on
 " Put your non-Plugin stuff after this line
 
 " Pull in contents of the .vim/rspec configuration file
@@ -43,6 +51,10 @@ imap kj <esc>
 nmap k gk
 nmap j gj
 
+" User enter to add new line before or after current line
+nmap <S-Enter> O<Esc>
+nmap <CR> o<Esc>
+
 " Fixing common typos
 command! Q q " Bind :Q to :q
 command! Qall qall
@@ -53,6 +65,10 @@ command! Wq wq
 
 " Leader
 let mapleader = "\<Space>"
+
+" remap ack
+nnoremap <Leader>A :!ag
+nnoremap <Leader>a :Ag!
 
 " clear the highlighting of previous search pattern matches
 nmap <leader>h :nohlsearch<CR>
@@ -76,6 +92,10 @@ nmap <leader>v :vnew <C-r>=escape(expand("%:p:h"), ' ') . '/'<cr>
 nnoremap <leader>ev :split $MYVIMRC<CR>  
 nnoremap <leader>sv :source $MYVIMRC<CR>
 
+" Open filename under cursor in new tab
+nnoremap <leader>gf <C-W>gf
+vnoremap <leader>gf <C-W>gf
+
 set backspace=2   " Backspace deletes like most programs in insert mode
 set nobackup
 set nowritebackup
@@ -89,6 +109,34 @@ set laststatus=2  " Always display the status line
 set autowrite     " Automatically :write before running commands
 set ignorecase    " Case insensitive pattern matching
 set smartcase     " Overrides ignorecase if pattern includes upcase
+set smartindent
+set autoindent
+
+" [buffer number] followed by filename:
+set statusline=[%n]\ %t
+" Syntastic settings
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+" show line#:column# on the right hand side
+set statusline+=%=%l:%c
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_loc_list_height = 5
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 1
+let g:syntastic_javascript_checkers = ['eslint']
+
+let g:syntastic_error_symbol = '❌'
+let g:syntastic_style_error_symbol = '⁉️'
+let g:syntastic_warning_symbol = '⚠️'
+let g:syntastic_style_warning_symbol = '💩'
+
+highlight link SyntasticErrorSign SignColumn
+highlight link SyntasticWarningSign SignColumn
+highlight link SyntasticStyleErrorSign SignColumn
+highlight link SyntasticStyleWarningSign SignColumn
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -114,9 +162,9 @@ augroup vimrcEx
   " Don't do it for commit messages, when the position is invalid, or when
   " inside an event handler (happens when dropping a file on gvim).
   autocmd BufReadPost *
-    \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal g`\"" |
-    \ endif
+        \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
+        \   exe "normal g`\"" |
+        \ endif
 
   " Set syntax highlighting for specific file types
   autocmd BufRead,BufNewFile Appraisals set filetype=ruby
@@ -139,10 +187,9 @@ set expandtab
 
 " Use one space, not two, after punctuation.
 set nojoinspaces
-	
 
-" Make it obvious where 80 characters is
-set textwidth=80
+
+set textwidth=0
 set colorcolumn=+1
 
 " Numbers
@@ -154,12 +201,12 @@ set numberwidth=5
 " will use completion if not at beginning
 set wildmode=list:longest,list:full
 function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<tab>"
-    else
-        return "\<c-p>"
-    endif
+  let col = col('.') - 1
+  if !col || getline('.')[col - 1] !~ '\k'
+    return "\<tab>"
+  else
+    return "\<c-p>"
+  endif
 endfunction
 inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
 inoremap <S-Tab> <c-n>
@@ -177,11 +224,15 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
+" Save with control S
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
 " configure syntastic syntax checking to check on open as well as save
 let g:syntastic_check_on_open=1
 let g:syntastic_html_tidy_ignore_errors=[" proprietary attribute \"ng-"]
 let g:syntastic_eruby_ruby_quiet_messages =
-    \ {"regex": "possibly useless use of a variable in void context"}
+      \ {"regex": "possibly useless use of a variable in void context"}
 
 " Set spellfile to location that is guaranteed to exist, can be symlinked to
 " Dropbox or kept in Git and managed outside of thoughtbot/dotfiles using rcm.
@@ -203,5 +254,17 @@ runtime macros/matchit.vim
 " Configure textobj-rubyblock
 set nocompatible
 if has("autocmd")
-      filetype indent plugin on
+  filetype indent plugin on
+endif
+
+
+" Absolute and relative line numbering
+function! NumberToggle()
+  if(&relativenumber == 1)
+    set norelativenumber
+  else
+    set relativenumber
   endif
+endfunc
+
+nnoremap <C-n> :call NumberToggle()<cr>
